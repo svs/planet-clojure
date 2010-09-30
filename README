@@ -1,0 +1,3 @@
+This site is the same as "http://planet.clojure.in":http://planet.clojure.in but rewritten in clojure.
+
+Please either email me or send me a pull request with your name and url in src/planet/planet.clj.

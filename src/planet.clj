@@ -71,7 +71,7 @@
 	  i
 	  (do
 	    (println (str "printing page " i))
-	    (spit (str "site/page" i ".html") (apply str (page {:entries (nth partitioned-entries i) :page i :total_pages 2})))
+	    (spit (str "site/page" i ".html") (apply str (page {:entries (nth partitioned-entries i) :page i :total_pages total_pages})))
 	    (recur (inc i))))))))
 
 

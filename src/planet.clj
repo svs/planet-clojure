@@ -56,7 +56,7 @@
 
 
 (defn -main  [& args]
-  (def-let [ blogs               (partition 15 (json/read-json (slurp "src/blogs.json")))
+  (def-let [ blogs               (partition 5 (json/read-json (slurp "src/blogs.json")))
 	    posts                (apply concat (for [bs blogs] (pmap #(get-feed %)  bs)))
 	    entries              (apply concat (for [p (remove (fn [s] (nil? s)) posts)]
 						(let [name (:name p)]

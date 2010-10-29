@@ -17,24 +17,24 @@
 
 (html/deftemplate page "template.html" [articles]
   [:section.entry] (html/clone-for [{:keys [title contents description link publishedDate updatedDate author name uri]} (:entries articles)]
-			      [:aside :a.title] (html/content title)
-			      [:aside :a.title] (html/set-attr :href link)
-			      [:span.date] (html/content (str (or publishedDate updatedDate)))
-			      [:span.blog-name] (html/content name)
-			      [:article] (html/html-content (or (first contents) (str description "<br><a href='" uri "'>" uri "</a>"))))
+				   [:aside :a.title] (html/content title)
+				   [:aside :a.title] (html/set-attr :href link)
+				   [:span.date] (html/content (str (or publishedDate updatedDate)))
+				   [:span.blog-name] (html/content name)
+				   [:article] (html/html-content (or (first contents) (str description "<br><a href='" uri "'>" uri "</a>"))))
   [:span.total_pages] (html/content (str (:total_pages articles)))
   [:a.previous_page] (html/do->
-		 (if (> (:page articles) 0)
-		   (do 
-		     (html/content  "Previous")
-		     (html/set-attr :href (str "page" (dec (:page articles)) ".html")))
-		   (html/substitute "")))
+		      (if (> (:page articles) 0)
+			(do 
+			  (html/content  "Previous")
+			  (html/set-attr :href (str "page" (dec (:page articles)) ".html")))
+			(html/substitute "")))
   [:a.next_page] (html/do->
-		 (if (> (:total_pages articles) (inc (:page articles)))
-		   (do 
-		     (html/content  "Next")
-		     (html/set-attr :href (str "page" (inc (:page articles)) ".html")))
-		   (html/substitute "")))
+		  (if (> (:total_pages articles) (inc (:page articles)))
+		    (do 
+		      (html/content  "Next")
+		      (html/set-attr :href (str "page" (inc (:page articles)) ".html")))
+		    (html/substitute "")))
   [:span.page_number] (html/content (str (inc (:page articles)))))
 
 			       
@@ -56,8 +56,8 @@
 
 
 (defn -main  [& args]
-  (def-let [blogs                (json/read-json (slurp "blogs.json"))
-	    posts                (pmap #(get-feed %)  blogs)
+  (def-let [ blogs               (partition 2 (take 6 (json/read-json (slurp "src/blogs.json"))))
+	    posts                (apply concat (for [bs blogs] (pmap #(get-feed %)  bs)))
 	    entries              (apply concat (for [p (remove (fn [s] (nil? s)) posts)]
 						(let [name (:name p)]
 						  (for [e (:entries p)] (merge e {:name name})))))

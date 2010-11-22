@@ -12,3 +12,14 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+#main {
+  width: 75%;
+  float: left;
+}
+
+#sidebar {
+  width: 20%;
+  float: left;
+  margin-left: 25px;
+  }

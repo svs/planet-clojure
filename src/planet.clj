@@ -4,6 +4,7 @@
   (:require [clojure.contrib.string :as str :only split])
   (:require [clojure.contrib.json :as json :only read-json])
   (:require [net.cgrand.enlive-html :as html])
+  (:require [http.async.client :as c])
   (:import [java.util Date]))
 
 (defmacro def-let
@@ -55,9 +56,17 @@
 	       (.printStackTrace ex))))))
 
 
+(defn get-all-feeds
+  [blog-urls]
+  (let [agents (map #(agent %) blog-urls)]
+  (doseq [a agents] (send-off a get-feed))
+  (apply await-for 5000 agents)
+  (doall (map #(deref %) agents))))
+
+
 (defn -main  [& args]
-  (def-let [blogs                (json/read-json (slurp "blogs.json"))
-	    posts                (pmap #(get-feed %)  blogs)
+  (def-let [blogs                (partition 2 (take 6 (json/read-json (slurp "src/blogs.json"))))
+	    posts                (apply concat (for [b blogs] (get-all-feeds b)))
 	    entries              (apply concat (for [p (remove (fn [s] (nil? s)) posts)]
 						(let [name (:name p)]
 						  (for [e (:entries p)] (merge e {:name name})))))
